@@ -145,6 +145,10 @@ class SubscriptionService:
         subscription: SubscriptionAccount,
         purpose_ids: list[int],
     ) -> SubscriptionAccount:
+        # Ensure existing relationship is loaded before we mutate it,
+        # otherwise the implicit lazy-load happens outside a greenlet.
+        await self.session.refresh(subscription, attribute_names=["purposes"])
+
         purposes = []
         for pid in purpose_ids:
             purpose = await self.purpose_repo.get_for_owner(pid, subscription.owner_id)
