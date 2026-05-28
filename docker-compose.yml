@@ -1,0 +1,15 @@
+services:
+  bot:
+    build: .
+    container_name: aiquotaflow_bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///data/aiquotaflow.db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
